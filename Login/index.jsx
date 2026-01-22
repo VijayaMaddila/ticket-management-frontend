@@ -86,7 +86,9 @@ const Login = ({ setUser }) => {
             color: "#333",
           }}
         >
-          Welcome Back Ticket Management
+          Welcome Back !!
+          <br /> 
+          Ticket Management
         </h2>
 
         <form

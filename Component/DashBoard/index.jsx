@@ -97,7 +97,7 @@ const Dashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    navigate("/login", { replace: true });
+    navigate("/login");
   };
 
   const getPriorityColor = (priority) => {
@@ -180,20 +180,32 @@ const Dashboard = () => {
               background: "#e74c3c",
               color: "#fff",
               fontWeight: "bold",
+              cursor: "pointer",
             }}
           >
             Logout
           </button>
           {role === "requester" && (
-            <button onClick={() => navigate("/create-ticket")}>
+            <button 
+              onClick={() => navigate("/create-ticket")}
+              style={{ cursor: "pointer" }}
+            >
               Create Ticket
             </button>
           )}
           {role === "admin" && (
-            <button onClick={() => navigate("/admin")}>Admin Panel</button>
+            <button 
+              onClick={() => navigate("/admin")}
+              style={{ cursor: "pointer" }}
+            >
+              Admin Panel
+            </button>
           )}
           {role === "datamember" && (
-            <button onClick={() => navigate("/assigned-tickets")}>
+            <button 
+              onClick={() => navigate("/assigned-tickets")}
+              style={{ cursor: "pointer" }}
+            >
               My Tickets
             </button>
           )}
@@ -326,7 +338,7 @@ const Dashboard = () => {
               ID: {ticket.id}
             </p>
             <p style={{ margin: "4px 0", fontSize: "13px", color: "#555" }}>
-              Type: {ticket.request_type}
+              Type: {ticket.requestType}
             </p>
             <div
               style={{
@@ -368,7 +380,7 @@ const Dashboard = () => {
             <div style={{ marginTop: "10px", display: "flex", gap: "10px" }}>
               {(role === "admin" || role === "requester") && (
                 <button
-                  style={{ flex: 1, padding: "6px", borderRadius: "8px" }}
+                  style={{ flex: 1, padding: "6px", borderRadius: "8px", cursor: "pointer" }}
                   onClick={() => navigate(`/ticket/${ticket.id}`)}
                 >
                   View Details
