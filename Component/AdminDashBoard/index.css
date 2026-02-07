@@ -1,0 +1,318 @@
+.dashboard-wrapper {
+  display: flex;
+  min-height: calc(100vh - 64px);
+  font-family: 'Inter', sans-serif;
+  background-color: #f4f6fa;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 25px 30px;
+  overflow-y: auto;
+  background-color: #f4f6fa;
+  min-height: 0; 
+  
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 25px;
+  
+
+}
+
+
+.filters input,
+.filters select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  min-width: 160px;
+  font-size: 0.95rem;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filters input:focus,
+.filters select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 5px rgba(37,99,235,0.4);
+}
+
+.tickets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.ticket-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  min-height: 180px; 
+}
+
+.ticket-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.ticket-id { 
+  font-weight: 600; 
+  color: #555;
+ }
+.ticket-title { 
+  font-size: 1.15rem; 
+  font-weight: 500; color:
+   #222; 
+   margin-bottom: 12px; }
+.ticket-info
+ { font-size: 0.95rem; 
+  color: #555; 
+  line-height: 1.5; 
+  margin-bottom: 12px; }
+.ticket-date { 
+  font-size: 0.85rem; 
+  color: #888; 
+  margin-bottom: 12px; 
+}
+
+.badge { 
+  padding: 4px 10px; 
+  border-radius: 12px; 
+  font-size: 0.75rem; 
+  color: #fff; 
+  text-transform: capitalize; }
+.badge.status.open { 
+  background-color: #3498db; }
+.badge.status.inprogress { 
+  background-color: #f1c40f; 
+}
+.badge.status.closed { 
+  background-color: #2ecc71;
+ }
+.badge.priority.high { 
+  background-color: #e74c3c;
+ }
+.badge.priority.medium { 
+  background-color: #f39c12; 
+}
+.badge.priority.low { 
+  background-color: #2ecc71;
+ }
+
+.view-comments-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #3498db;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  align-self: flex-end; 
+  margin-top: 12px;
+  transition: background 0.2s ease;
+}
+
+.view-comments-btn:hover { background-color: #2980b9; }
+
+
+.comments-modal { 
+  position: fixed; 
+  top:0; left:0; 
+  width:100%; 
+  height:100%; 
+  background-color: rgba(0,0,0,0.45); 
+  display:flex; 
+  justify-content:center; 
+  align-items:center; 
+  padding:20px; 
+  z-index:1000; }
+
+.comments-content { 
+  background-color:#fff; 
+  padding:20px 22px; 
+  width:min(640px, 96%); 
+  max-width:640px; 
+  max-height:84%; 
+  overflow-y:auto; 
+  border-radius:12px; 
+  box-shadow:0 6px 25px rgba(0,0,0,0.25); 
+  position:relative; }
+
+.comments-content .comment-list { 
+  margin-top:12px; 
+  display:flex; 
+  flex-direction:column; 
+  gap:12px; }
+
+
+.comments-list { 
+  display:flex; 
+  flex-direction:column; 
+  gap:12px; 
+  padding:8px 4px; }
+.comment-row { 
+  display:flex; 
+  gap:10px; 
+  align-items:flex-start; 
+}
+.comment-row.outgoing { 
+  flex-direction: row-reverse;
+ }
+.avatar { 
+  width:36px; 
+  height:36px; 
+  border-radius:50%; 
+  background:#c7d2fe; 
+  color:#0f172a; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  font-weight:700; }
+.bubble { 
+  max-width:84%;
+   padding:10px 12px; 
+   border-radius:12px; 
+   background:#ffffff; 
+   box-shadow:0 4px 12px rgba(2,6,23,0.06); 
+   color:#111827; }
+.bubble.requester { 
+  background:#e0f2fe; 
+  border-bottom-left-radius:4px;
+ }
+.bubble.datamember { 
+  background:#eef2ff; 
+  border-bottom-right-radius:4px; }
+.meta-left { 
+  display:flex; 
+  flex-direction:column; }
+.meta-name { 
+  font-weight:600;
+   color:#0f172a; 
+   font-size:13px }
+.meta-role {
+   font-size:12px; 
+   color:#6b7280 }
+.meta-time { 
+  font-size:11px; 
+  color:#94a3b8 }
+
+
+.comments-ul { 
+  list-style:none; 
+  padding:8px 4px; 
+  margin:0; 
+  display:flex; 
+  flex-direction:column;
+   gap:12px }
+.comment-li { 
+  display:block }
+
+
+@media (max-width: 720px) {
+  .comments-content { 
+    width: 96%; 
+    padding:16px 18px; }
+  .avatar { 
+    width:32px; 
+    height:32px; 
+    font-size:13px }
+  .bubble { 
+    max-width:90% 
+  }
+}
+
+.comment-header { 
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center; 
+  gap:12px; 
+  font-size:0.95rem; 
+  color:#333; }
+
+.comment-body {
+   margin:6px 0 0 0; 
+   font-size:0.95rem;
+    color:#444; 
+    line-height:1.45; }
+
+.close-btn { 
+  position:absolute; 
+  top:12px; right:18px; 
+  border:none; 
+  background:none; 
+  font-size:1.3rem; 
+  cursor:pointer; 
+  color:#333; 
+}
+
+.comment-header { 
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center; 
+  font-size:0.85rem; 
+  color:#333; 
+}
+
+.comment-body { 
+  margin:6px 0 15px 0; 
+  font-size:0.9rem; 
+  color:#555; 
+  line-height:1.4; 
+}
+
+.center-text { 
+  text-align:center; 
+  color:#666; 
+  font-size:1rem; 
+  margin-top:30px; 
+}
+
+
+@media (max-width: 1024px) {
+  .sidebar { width: 220px; }
+  .tickets-grid { 
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-wrapper { flex-direction: column; }
+  .sidebar { 
+    width: 100%; 
+    flex-direction: row; 
+    overflow-x: auto; 
+    padding: 10px; }
+  .main-content { flex: 1; }
+  .tickets-grid { 
+    grid-template-columns: 1fr;
+     gap: 15px; }
+  .filters { 
+    flex-direction: column; 
+    align-items: stretch; }
+  
+}

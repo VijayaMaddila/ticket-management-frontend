@@ -1,0 +1,126 @@
+:root{
+  --navbar-height:64px;
+  --gutter:20px;
+
+
+  --color-primary: #2563EB; 
+  --color-primary-dark: #1e40af;
+  --color-accent: #7C3AED; 
+  --color-teal: #06B6D4;
+
+  
+  --bg: #F8FAFF; 
+  --surface: #FFFFFF; 
+  --text-primary: #0F172A; 
+  --text-muted: #6B7280; 
+  --border: #E5E7EB;
+  --muted-200: #E6EDF3;
+  --muted-300: #D1D5DB;
+
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  
+  --sidebar-bg: #0F172A;
+  --sidebar-hover: #172033;
+  --text-on-dark: #FFFFFF;
+
+
+  --seg-primary: var(--color-primary);
+  --seg-dark: var(--sidebar-bg);
+  --seg-dark-2: var(--sidebar-hover);
+  --seg-text: var(--text-on-dark);
+  --seg-accent: var(--color-accent);
+}
+
+.app-with-navbar{
+  padding-top: var(--navbar-height);
+}
+
+.app-with-navbar .dashboard-wrapper {
+  min-height: calc(100vh - var(--navbar-height));
+}
+*{box-sizing:border-box}
+body,html,#root{height:100%;margin:0;font-family:Arial, Helvetica, sans-serif}
+
+
+.main-content, .dashboard-content, .content {
+  padding: var(--gutter);
+}
+
+
+.filters {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 40%;
+}
+
+.search-input {
+  padding: 10px 12px 10px 36px;
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+  background: #fff;
+  outline: none;
+  min-width: 220px;
+  width: 100%;
+}
+
+
+.clear-btn {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  padding: 6px;
+  margin-left: 6px;
+  cursor: pointer;
+}
+
+.filter-select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #e6edf3;
+  background: #fff;
+}
+
+
+.navbar { box-shadow: 0 2px 8px rgba(2,6,23,0.2); }
+
+
+@media(max-width:480px){
+  .main-content, .dashboard-content, .content{padding:12px}
+}
+
+
+@media (max-width: 1024px) {
+  .search-wrapper {
+    width: 55%;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-wrapper {
+    width: 100%;
+    min-width: 0;
+    margin-top: 8px;
+  }
+
+  .search-input {
+    padding: 12px 14px 12px 38px;
+    font-size: 15px;
+  }
+}
+@media (max-width: 480px) {
+  .search-input {
+    font-size: 16px; 
+  }
+}
