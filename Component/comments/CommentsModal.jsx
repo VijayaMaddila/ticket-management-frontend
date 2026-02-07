@@ -31,7 +31,15 @@ const CommentsModal = ({
     <Modal isOpen={isOpen} onClose={onClose} title={title} className="comments-modal-box">
       <div className="comments-content-inner">
         {comments.length === 0 ? (
-          <p>No comments for this ticket.</p>
+          <div className="comments-empty">
+            <div className="comments-empty-icon" aria-hidden>
+              💭
+            </div>
+            <p className="comments-empty-title">No comments yet</p>
+            <p className="comments-empty-text">
+              Be the first to add a comment for this ticket.
+            </p>
+          </div>
         ) : (
           <ul className="comments-ul" ref={listRef}>
             {comments.map((c) => (
@@ -44,7 +52,7 @@ const CommentsModal = ({
             ))}
           </ul>
         )}
-        {footer}
+        {footer && <div className="comments-footer">{footer}</div>}
       </div>
     </Modal>
   );

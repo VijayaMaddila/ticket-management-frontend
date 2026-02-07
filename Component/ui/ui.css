@@ -18,9 +18,9 @@
 .ui-badge--priority.medium { background-color: #f39c12; }
 .ui-badge--priority.high { background-color: #e74c3c; }
 .ui-badge--priority.urgent { background-color: #c0392b; }
-.ui-badge--role.requester,
-.ui-badge--role.datamember,
-.ui-badge--role.admin { background-color: #3498db; }
+.ui-badge--role.ui-badge--requester { background-color: #3498db; }
+.ui-badge--role.ui-badge--datamember { background-color: #6366f1; }
+.ui-badge--role.ui-badge--admin { background-color: #059669; }
 
 /* Modal */
 .ui-modal-overlay {

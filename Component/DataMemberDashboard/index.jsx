@@ -4,6 +4,7 @@ import DashboardLayout from "../ui/DashboardLayout";
 import FilterBar from "../ui/FilterBar";
 import TicketCard from "../tickets/TicketCard";
 import Modal from "../ui/Modal";
+import CommentsModal from "../comments/CommentsModal";
 import { LoadingState, ErrorState, EmptyState } from "../ui/PageState";
 import "./index.css";
 
@@ -24,6 +25,7 @@ const AssignedTickets = () => {
   const [commentText, setCommentText] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [priorityFilter, setPriorityFilter] = useState("ALL");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     if (!userId || !token) {
@@ -47,11 +49,19 @@ const AssignedTickets = () => {
   }, [userId, token]);
 
   useEffect(() => {
+    const term = (searchTerm || "").toString().toLowerCase().trim();
     let result = [...tickets];
+    if (term) {
+      result = result.filter(
+        (t) =>
+          String(t.id || "").toLowerCase().includes(term) ||
+          (t.title || "").toLowerCase().includes(term)
+      );
+    }
     if (statusFilter !== "ALL") result = result.filter((t) => t.status === statusFilter);
     if (priorityFilter !== "ALL") result = result.filter((t) => t.priority === priorityFilter);
     setFilteredTickets(result);
-  }, [statusFilter, priorityFilter, tickets]);
+  }, [searchTerm, statusFilter, priorityFilter, tickets]);
 
   const handleStatusChange = async (newStatus) => {
     if (!solveTicket) return;
@@ -103,7 +113,12 @@ const AssignedTickets = () => {
   return (
     <DashboardLayout title="Assigned Tickets">
       <FilterBar
-        showSearch={false}
+        showSearch={true}
+        searchPlaceholder="Search by ID or title"
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        clearSearchButton={true}
+        onClearSearch={() => setSearchTerm("")}
         statusOptions={STATUS_OPTS}
         statusValue={statusFilter}
         onStatusChange={setStatusFilter}
@@ -128,8 +143,20 @@ const AssignedTickets = () => {
               descriptionMaxLength={120}
             >
               <div className="card-actions">
-                <button className="view-btn" onClick={() => setSolveTicket(t)}>Solve</button>
-                <button className="view-btn" onClick={() => fetchComments(t)}>Comments</button>
+                <button
+                  type="button"
+                  className="card-action-btn card-action-btn--solve"
+                  onClick={() => setSolveTicket(t)}
+                >
+                  Solve
+                </button>
+                <button
+                  type="button"
+                  className="card-action-btn card-action-btn--comments"
+                  onClick={() => fetchComments(t)}
+                >
+                  Comments
+                </button>
               </div>
             </TicketCard>
           ))
@@ -140,58 +167,73 @@ const AssignedTickets = () => {
         isOpen={!!solveTicket}
         onClose={() => setSolveTicket(null)}
         title={solveTicket?.title || "Solve Ticket"}
+        className="solve-modal"
       >
-        <p>{solveTicket?.description || "No description provided."}</p>
-        <label>Change Status</label>
-        <select
-          defaultValue={solveTicket?.status || "OPEN"}
-          onChange={(e) => handleStatusChange(e.target.value)}
-        >
-          {STATUS_OPTS.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
-        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>
-          <button onClick={() => setSolveTicket(null)}>Cancel</button>
+        <div className="solve-modal__body">
+          <section className="solve-modal__section">
+            <h4 className="solve-modal__label">Description</h4>
+            <p className="solve-modal__description">
+              {solveTicket?.description || "No description provided."}
+            </p>
+          </section>
+          <section className="solve-modal__section">
+            <label className="solve-modal__label" htmlFor="solve-status">Change status</label>
+            <select
+              id="solve-status"
+              className="solve-modal__select"
+              defaultValue={solveTicket?.status || "OPEN"}
+              onChange={(e) => handleStatusChange(e.target.value)}
+            >
+              {STATUS_OPTS.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </section>
+          <footer className="solve-modal__actions">
+            <button
+              type="button"
+              className="solve-modal__btn solve-modal__btn--secondary"
+              onClick={() => setSolveTicket(null)}
+            >
+              Cancel
+            </button>
+          </footer>
         </div>
       </Modal>
 
-      {commentsTicket && (
-        <Modal
-          isOpen={!!commentsTicket}
-          onClose={() => setCommentsTicket(null)}
-          title={commentsTicket.title || "Comments"}
-          className="chat-modal"
-        >
-          <div className="chat-description">
-            {commentsTicket.description || "No description provided."}
-          </div>
-          <div className="chat-body">
-            {commentsTicket.comments?.length > 0 ? (
-              commentsTicket.comments.map((c, idx) => (
-                <div
-                  key={c.id || idx}
-                  className={`chat-message ${c.user?.id === userId ? "own" : "other"}`}
-                >
-                  <div className="chat-user">{c.user?.name} {c.user?.role}</div>
-                  <div className="chat-text">{c.comment}</div>
-                </div>
-              ))
-            ) : (
-              <div className="no-messages">No comments yet</div>
-            )}
-          </div>
-          <div className="chat-input">
+      <CommentsModal
+        isOpen={!!commentsTicket}
+        onClose={() => {
+          setCommentsTicket(null);
+          setCommentText("");
+        }}
+        comments={commentsTicket?.comments ?? []}
+        currentUserId={userId}
+        title={commentsTicket?.title || "Comments"}
+        footer={
+          <div className="comments-input-row">
             <textarea
               value={commentText}
+              placeholder="Write a comment..."
               onChange={(e) => setCommentText(e.target.value)}
-              placeholder="Type a message..."
-              rows={2}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleAddComment();
+                }
+              }}
             />
-            <button onClick={handleAddComment}>Send</button>
+            <button
+              type="button"
+              className="comments-send-btn"
+              onClick={handleAddComment}
+              disabled={!commentText.trim()}
+            >
+              Send
+            </button>
           </div>
-        </Modal>
-      )}
+        }
+      />
     </DashboardLayout>
   );
 };

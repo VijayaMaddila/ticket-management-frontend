@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState, useRef } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiGet, apiPost } from "../../src/config/api";
 import DashboardLayout from "../ui/DashboardLayout";
 import FilterBar from "../ui/FilterBar";
 import TicketCard from "../tickets/TicketCard";
-import CommentItem from "../comments/CommentItem";
+import CommentsModal from "../comments/CommentsModal";
 import Modal from "../ui/Modal";
 import { LoadingState, ErrorState } from "../ui/PageState";
 import "./index.css";
@@ -23,10 +23,9 @@ const RequesterDashboard = () => {
   const [priority, setPriority] = useState("");
   const [requestType, setRequestType] = useState("");
   const [comments, setComments] = useState([]);
-  const [showCommentsDrawer, setShowCommentsDrawer] = useState(false);
+  const [showCommentsModal, setShowCommentsModal] = useState(false);
   const [currentTicketId, setCurrentTicketId] = useState(null);
   const [newComment, setNewComment] = useState("");
-  const drawerBodyRef = useRef(null);
   const [showCreateTicketModal, setShowCreateTicketModal] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -85,7 +84,7 @@ const RequesterDashboard = () => {
       const data = await apiGet(`/api/comments/ticket/${ticketId}`, { token });
       setComments(data);
       setCurrentTicketId(ticketId);
-      setShowCommentsDrawer(true);
+      setShowCommentsModal(true);
     } catch (err) {
       setError(err.message);
     }
@@ -106,12 +105,6 @@ const RequesterDashboard = () => {
     }
   };
 
-  useEffect(() => {
-    if (!showCommentsDrawer) return;
-    const el = drawerBodyRef.current;
-    if (!el) return;
-    setTimeout(() => { el.scrollTop = el.scrollHeight; }, 50);
-  }, [showCommentsDrawer, comments]);
 
   const handleCreateTicket = async () => {
     if (!title.trim() || !description.trim()) {
@@ -217,47 +210,36 @@ const RequesterDashboard = () => {
           </div>
         </div>
 
-        {showCommentsDrawer && (
-          <div className={`comments-drawer ${showCommentsDrawer ? "open" : ""}`}>
-            <div className="drawer-body" ref={drawerBodyRef}>
-              <div className="drawer-header">
-                <h3>Comments</h3>
-                <button className="close-btn" onClick={() => setShowCommentsDrawer(false)}>✕</button>
-              </div>
-              {comments.length === 0 ? (
-                <p>No comments yet</p>
-              ) : (
-                <div className="comments-list">
-                  {comments.map((c) => (
-                    <CommentItem key={c.id} comment={c} isOutgoing={c.user?.id === user.id} />
-                  ))}
-                </div>
-              )}
-              <div className="drawer-footer">
-                <div className="chat-input">
-                  <textarea
-                    value={newComment}
-                    placeholder="Write a comment..."
-                    onChange={(e) => setNewComment(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleAddComment();
-                      }
-                    }}
-                  />
-                </div>
-                <button
-                  className="chat-send"
-                  onClick={handleAddComment}
-                  disabled={!newComment.trim()}
-                >
-                  Send
-                </button>
-              </div>
+        <CommentsModal
+          isOpen={showCommentsModal}
+          onClose={() => setShowCommentsModal(false)}
+          comments={comments}
+          currentUserId={user.id}
+          title="Comments"
+          footer={
+            <div className="comments-input-row">
+              <textarea
+                value={newComment}
+                placeholder="Write a comment..."
+                onChange={(e) => setNewComment(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleAddComment();
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="comments-send-btn"
+                onClick={handleAddComment}
+                disabled={!newComment.trim()}
+              >
+                Send
+              </button>
             </div>
-          </div>
-        )}
+          }
+        />
 
         <Modal
           isOpen={showHistoryModal}
@@ -265,77 +247,186 @@ const RequesterDashboard = () => {
           title="Ticket History"
           className="history-modal"
         >
-          <div className="modal-body">
+          <div className="history-modal-body">
             {history.length === 0 ? (
-              <p>No history</p>
+              <p className="history-empty">No activity yet</p>
             ) : (
-              <table className="history-table">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Action</th>
-                    <th>Old</th>
-                    <th>New</th>
-                    <th>By</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {history.map((h, i) => (
-                    <tr key={h.id}>
-                      <td>{i + 1}</td>
-                      <td>{h.action}</td>
-                      <td>{h.oldValue || "—"}</td>
-                      <td>{h.newValue || "—"}</td>
-                      <td>{h.updatedBy || "System"}</td>
-                      <td>{new Date(h.timestamp).toLocaleString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <ul className="history-timeline">
+                {[...history].reverse().map((h) => {
+                  const actionLabel = (h.action || "")
+                    .replace(/_/g, " ")
+                    .toLowerCase()
+                    .replace(/\b\w/g, (c) => c.toUpperCase());
+                  const hasChange = h.oldValue != null || h.newValue != null;
+                  const timeStr = h.timestamp
+                    ? new Date(h.timestamp).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      })
+                    : "";
+                  const byLabel = h.updatedBy != null ? `User #${h.updatedBy}` : "System";
+                  const statusSlug = (v) =>
+                    (v || "").toString().toLowerCase().replace(/\s+/g, "");
+                  const statusSlugs = [
+                    "open",
+                    "inprogress",
+                    "onhold",
+                    "completed",
+                    "rejected",
+                    "closed",
+                  ];
+                  const isStatus = (v) => statusSlugs.includes(statusSlug(v));
+                  const statusClass = (v) => {
+                    const s = statusSlug(v);
+                    if (!s) return "";
+                    if (s === "inprogress") return "history-timeline-chip--inprogress";
+                    if (s === "onhold") return "history-timeline-chip--onhold";
+                    return `history-timeline-chip--${s}`;
+                  };
+                  const renderValue = (value, isOld) => {
+                    if (value == null) return null;
+                    const slug = statusSlug(value);
+                    if (statusSlugs.includes(slug)) {
+                      const label =
+                        slug === "inprogress"
+                          ? "In progress"
+                          : slug === "onhold"
+                            ? "On hold"
+                            : (value || "").charAt(0).toUpperCase() + (value || "").slice(1).toLowerCase();
+                      return (
+                        <span
+                          className={`history-timeline-chip ${statusClass(value)} ${isOld ? "history-timeline-chip--old" : ""}`}
+                        >
+                          {label}
+                        </span>
+                      );
+                    }
+                    return (
+                      <span className={isOld ? "history-timeline-old" : "history-timeline-new"}>
+                        {value}
+                      </span>
+                    );
+                  };
+                  return (
+                    <li key={h.id} className="history-timeline-item">
+                      <div className="history-timeline-dot" aria-hidden />
+                      <div className="history-timeline-card">
+                        <div className="history-timeline-action">{actionLabel}</div>
+                        {hasChange && (
+                          <div className="history-timeline-change">
+                            {h.oldValue != null && h.newValue != null ? (
+                              <>
+                                {renderValue(h.oldValue, true)}
+                                <span className="history-timeline-arrow"> → </span>
+                                {renderValue(h.newValue, false)}
+                              </>
+                            ) : h.newValue != null ? (
+                              renderValue(h.newValue, false)
+                            ) : (
+                              renderValue(h.oldValue, true)
+                            )}
+                          </div>
+                        )}
+                        <div className="history-timeline-meta">
+                          {byLabel}
+                          {timeStr && <span className="history-timeline-time">{timeStr}</span>}
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
             )}
           </div>
         </Modal>
 
-        {showCreateTicketModal && (
-          <div className="create-ticket-drawer-overlay" onClick={() => setShowCreateTicketModal(false)}>
-            <div className="create-ticket-drawer" onClick={(e) => e.stopPropagation()}>
-              <div className="drawer-header">
-                <h3>Create Ticket</h3>
-                <button className="close-btn" onClick={() => setShowCreateTicketModal(false)}>✕</button>
-              </div>
-              <div className="drawer-body">
-                {success && <div className="success">{success}</div>}
-                {error && <div className="error">{error}</div>}
-                <label>Title</label>
-                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Issue title" />
-                <label>Description</label>
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Describe the issue" />
-                <div style={{ display: "flex", gap: 10 }}>
-                  <select value={ticketRequestType} onChange={(e) => setTicketRequestType(e.target.value)}>
+        <Modal
+          isOpen={showCreateTicketModal}
+          onClose={() => setShowCreateTicketModal(false)}
+          title="Create Ticket"
+          className="create-ticket-modal"
+        >
+          <div className="create-ticket-modal-content">
+            <div className="create-ticket-modal-body">
+              {success && <div className="create-ticket-success">{success}</div>}
+              {error && <div className="create-ticket-error">{error}</div>}
+              <label className="create-ticket-label">Title</label>
+              <input
+                className="create-ticket-input"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Issue title"
+              />
+              <label className="create-ticket-label">Description</label>
+              <textarea
+                className="create-ticket-input create-ticket-textarea"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Describe the issue"
+              />
+              <div className="create-ticket-row">
+                <div className="create-ticket-field">
+                  <label className="create-ticket-label">Type</label>
+                  <select
+                    className="create-ticket-input"
+                    value={ticketRequestType}
+                    onChange={(e) => setTicketRequestType(e.target.value)}
+                  >
                     <option value="ACCESS">ACCESS</option>
                     <option value="ISSUE">ISSUE</option>
                   </select>
-                  <select value={ticketPriority} onChange={(e) => setTicketPriority(e.target.value)}>
+                </div>
+                <div className="create-ticket-field">
+                  <label className="create-ticket-label">Priority</label>
+                  <select
+                    className="create-ticket-input"
+                    value={ticketPriority}
+                    onChange={(e) => setTicketPriority(e.target.value)}
+                  >
                     <option value="LOW">LOW</option>
                     <option value="MEDIUM">MEDIUM</option>
                     <option value="HIGH">HIGH</option>
                   </select>
                 </div>
-                <label>Requested Dataset</label>
-                <input value={requestedDataset} onChange={(e) => setRequestedDataset(e.target.value)} placeholder="Dataset name" />
-                <label>Due Date</label>
-                <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
               </div>
-              <div className="drawer-footer">
-                <div className="drawer-buttons">
-                  <button className="btn-secondary" onClick={() => setShowCreateTicketModal(false)}>Cancel</button>
-                  <button className="btn-primary" onClick={handleCreateTicket} disabled={!title.trim() || !description.trim()}>Create</button>
-                </div>
-              </div>
+              <label className="create-ticket-label">Requested Dataset</label>
+              <input
+                className="create-ticket-input"
+                value={requestedDataset}
+                onChange={(e) => setRequestedDataset(e.target.value)}
+                placeholder="Dataset name"
+              />
+              <label className="create-ticket-label">Due Date</label>
+              <input
+                type="date"
+                className="create-ticket-input"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+              />
+            </div>
+            <div className="create-ticket-modal-footer">
+              <button
+                type="button"
+                className="create-ticket-btn create-ticket-btn-secondary"
+                onClick={() => setShowCreateTicketModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="create-ticket-btn create-ticket-btn-primary"
+                onClick={handleCreateTicket}
+                disabled={!title.trim() || !description.trim()}
+              >
+                Create
+              </button>
             </div>
           </div>
-        )}
+        </Modal>
       </div>
     </div>
   );

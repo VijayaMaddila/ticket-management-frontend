@@ -42,13 +42,31 @@
 .ticket-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
+  gap: 10px;
 }
 
 .ticket-id {
   font-weight: 600;
   color: #555;
 }
+
+/* Role badge/chip always visible (not only on hover) */
+.ticket-card .ui-badge--role {
+  flex-shrink: 0;
+  opacity: 1;
+  visibility: visible;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: capitalize;
+}
+.ticket-card .ui-badge--role.ui-badge--requester { background-color: #2563eb; }
+.ticket-card .ui-badge--role.ui-badge--datamember { background-color: #6366f1; }
+.ticket-card .ui-badge--role.ui-badge--admin { background-color: #059669; }
 
 .ticket-info p {
   font-size: 0.9rem;
@@ -72,11 +90,3 @@
 }
 
 
-.badge.requester {
-  background-color: #4a90e2;
-  color: #fff;
-  font-size: 0.75rem;
-  padding: 3px 8px;
-  border-radius: 12px;
-  text-transform: capitalize;
-}

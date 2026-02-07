@@ -54,23 +54,48 @@ const Navbar = ({ role = "", setUser }) => {
     setOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onEscape = (e) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onEscape);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onEscape);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const goHome = () =>
+    navigate(userRole === "requester" ? "/requesterDashboard" : "/dashboard");
+
   return (
     <header className="navbar">
-    
-      <div
-        className="navbar-left"
-        onClick={() =>
-          navigate(userRole === "requester" ? "/requesterDashboard" : "/dashboard")
-        }
-      >
-        <div className="mobile-toggle" onClick={() => setOpen(!open)}>
-        {open ? <FiX /> : <FiMenu />}
-      </div>
-        <img src={ResolveIcon} alt="Resolve" className="resolve-icon" />
-        <span className="navbar-logo">Segmento Resolve</span>
+      <div className="navbar-left">
+        <button
+          type="button"
+          className="mobile-toggle"
+          onClick={() => setOpen((prev) => !prev)}
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+        >
+          {open ? <FiX /> : <FiMenu />}
+        </button>
+        <div className="navbar-logo-wrap" onClick={goHome}>
+          <img src={ResolveIcon} alt="Resolve" className="resolve-icon" />
+          <span className="navbar-logo">Segmento Resolve</span>
+        </div>
       </div>
 
-      
+      {open && (
+        <div
+          className="navbar-backdrop"
+          onClick={() => setOpen(false)}
+          role="presentation"
+          aria-hidden="true"
+        />
+      )}
       <div className={`navbar-menu ${open ? "open" : ""}`}>
         {isLoggedIn &&
           items

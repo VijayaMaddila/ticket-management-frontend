@@ -26,8 +26,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
   min-width: 0;
+}
+
+.navbar-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 }
 
 .resolve-icon {
@@ -135,17 +141,36 @@
 
 .mobile-toggle {
   display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
   background: none;
   border: none;
   color: inherit;
-  font-size: 24px;
+  font-size: 22px;
   cursor: pointer;
-  padding: 4px;
-  margin-left: 8px;
+  -webkit-tap-highlight-color: transparent;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.mobile-toggle:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.navbar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 998;
 }
 
 .navbar-menu.open {
-  position: absolute;
+  position: fixed;
   top: var(--navbar-height);
   left: 0;
   right: 0;
@@ -153,52 +178,91 @@
   max-height: calc(100vh - var(--navbar-height));
   background: var(--seg-dark);
   flex-direction: column;
-  padding: 10px 12px;
-  gap: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  align-items: stretch;
+  padding: 12px 16px 24px;
+  gap: 2px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  z-index: 999;
 }
 
 .navbar-menu.open .nav-item {
-  border-radius: 8px;
-  width: 100%;
-  justify-content: flex-start;
-}
-
-.mobile-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 14px 22px;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  font-size: 14px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  width: 100%;
+  justify-content: flex-start;
+  font-size: 15px;
   font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.85);
-  width: 100%;
-  text-align: left;
-  border-radius: 0;
-  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
 }
 
-.mobile-item:hover {
-  background-color: var(--seg-dark-2);
+.navbar-menu.open .nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
 
-.mobile-item.login:hover {
-  border-left-color: var(--seg-accent);
+.navbar-menu.open .nav-item.active {
+  background: rgba(124, 58, 237, 0.35);
+  color: #fff;
 }
 
-.mobile-item.logout:hover {
-  border-left-color: var(--danger);
+.navbar-menu.open .nav-item .icon {
+  font-size: 1.15em;
+  opacity: 1;
+}
+
+.navbar-menu.open .nav-item .label {
+  letter-spacing: 0.01em;
+}
+
+/* Logout/Login: desktop uses .logout; mobile open menu uses .navbar-menu.open .mobile-item */
+.mobile-item {
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.navbar-menu.open .mobile-item {
+  display: flex;
+  width: 100%;
+  text-align: left;
+  padding: 14px 16px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.navbar-menu.open .mobile-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.navbar-menu.open .mobile-item.logout:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.navbar-menu.open .mobile-item.login:hover {
+  background: rgba(124, 58, 237, 0.25);
+  color: #e9d5ff;
 }
 
 /* Responsive Design */
@@ -213,10 +277,22 @@
 
   .navbar-menu.open {
     display: flex;
+    animation: nav-menu-in 0.2s ease-out;
+  }
+
+  @keyframes nav-menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .mobile-toggle {
-    display: block;
+    display: flex;
   }
 
   .navbar-logo {
