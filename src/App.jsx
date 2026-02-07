@@ -41,8 +41,8 @@ function App() {
     <BrowserRouter>
       <div className="app-with-navbar">
         <Navbar role={user?.role || ""} setUser={setUser} />
-
-        <Routes>
+        <div className="app-body">
+          <Routes>
           
           <Route path="/login" element={<Login setUser={setUser} />} />
           <Route path="/register" element={<Register />} />
@@ -64,7 +64,8 @@ function App() {
             path="*"
             element={<Navigate to={getHomeRoute()} replace />}
           />
-        </Routes>
+          </Routes>
+        </div>
       </div>
     </BrowserRouter>
   );

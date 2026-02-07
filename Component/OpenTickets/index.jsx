@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiGet, apiPut, API_BASE_URL, getAuthHeaders } from "../../src/config/api";
+import { apiGet, API_BASE_URL, getAuthHeaders } from "../../src/config/api";
 import DashboardLayout from "../ui/DashboardLayout";
 import FilterBar from "../ui/FilterBar";
 import TicketCard from "../tickets/TicketCard";
@@ -103,22 +103,6 @@ const OpenTickets = () => {
     }
   };
 
-  const handleStatusChange = async (ticketId, newStatus) => {
-    try {
-      await apiPut(
-        `/api/tickets/${ticketId}/status?status=${newStatus}&userId=${user.id}`,
-        null,
-        { token }
-      );
-      const data = await apiGet("/api/tickets", { token });
-      setTickets(data.filter((t) => (t.status || "").toLowerCase() === "open"));
-    } catch (err) {
-      console.error(err);
-      alert("Error updating ticket status");
-    }
-  };
-
-  const statusOptions = ["Open", "In Progress", "Resolved", "Closed"];
   const priorities = [...new Set(tickets.map((t) => t.priority).filter(Boolean))];
   const requestTypes = [...new Set(tickets.map((t) => t.request_type || t.requestType).filter(Boolean))];
   const dataMembers = users.filter((u) => (u.role || "").toLowerCase() === "datamember");
@@ -160,9 +144,6 @@ const OpenTickets = () => {
               key={ticket.id}
               ticket={ticket}
               showDescription={false}
-              statusOptions={statusOptions}
-              onStatusChange={role !== "requester" ? handleStatusChange : undefined}
-              statusSelectValue={ticket.status}
             >
               {role !== "requester" && (
                 <button
@@ -188,53 +169,81 @@ const OpenTickets = () => {
         title="Assign Ticket"
         className="assign-modal"
       >
-        <div className="assign-details">
-          <div>
-            <p><strong>ID:</strong> #{selectedTicket?.id}</p>
-            <p><strong>Title:</strong> {selectedTicket?.title}</p>
-            <p><strong>Type:</strong> {selectedTicket?.request_type || selectedTicket?.requestType}</p>
-          </div>
-          <div>
-            <p><strong>Priority:</strong> {selectedTicket?.priority}</p>
-            <p><strong>Current:</strong> {selectedTicket?.assignedTo?.name || "Unassigned"}</p>
-          </div>
+        <div className="assign-modal__body">
+          <section className="assign-ticket-summary">
+            <div className="assign-ticket-summary__row">
+              <span className="assign-ticket-summary__label">Ticket</span>
+              <span className="assign-ticket-summary__value">#{selectedTicket?.id} · {selectedTicket?.title}</span>
+            </div>
+            <div className="assign-ticket-summary__chips">
+              <span className="assign-ticket-summary__chip assign-ticket-summary__chip--type">
+                {selectedTicket?.request_type || selectedTicket?.requestType}
+              </span>
+              <span className={`assign-ticket-summary__chip assign-ticket-summary__chip--priority assign-ticket-summary__chip--priority-${(selectedTicket?.priority || "").toLowerCase().replace(/\s+/g, "")}`}>
+                {selectedTicket?.priority}
+              </span>
+              <span className="assign-ticket-summary__chip assign-ticket-summary__chip--muted">
+                Current: {selectedTicket?.assignedTo?.name || "Unassigned"}
+              </span>
+            </div>
+          </section>
+
+          <section className="assign-picker">
+            <label className="assign-picker__label">Assign to</label>
+            <input
+              type="text"
+              className="assign-picker__search"
+              placeholder="Search by name or email…"
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
+              aria-label="Search assignees"
+            />
+            <div className="assign-picker__list" role="listbox" aria-label="Data members">
+              {filteredUsers.length === 0 ? (
+                <p className="assign-picker__empty">No eligible assignees</p>
+              ) : (
+                filteredUsers.map((u) => (
+                  <div
+                    key={u.id}
+                    role="option"
+                    aria-selected={selectedUserId === String(u.id)}
+                    className={`assign-picker__option ${selectedUserId === String(u.id) ? "assign-picker__option--selected" : ""}`}
+                    onClick={() => setSelectedUserId(String(u.id))}
+                  >
+                    <div className="assign-picker__avatar">{(u.name || "U").charAt(0).toUpperCase()}</div>
+                    <div className="assign-picker__info">
+                      <span className="assign-picker__name">{u.name}</span>
+                      <span className="assign-picker__email">{u.email}</span>
+                    </div>
+                    <span className="assign-picker__role">{u.role}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+
+          {assignSuccess && (
+            <div className="assign-modal__success" role="status">{assignSuccess}</div>
+          )}
+
+          <footer className="assign-modal__actions">
+            <button
+              type="button"
+              className="assign-modal__btn assign-modal__btn--secondary"
+              onClick={() => setShowAssignModal(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="assign-modal__btn assign-modal__btn--primary"
+              onClick={assignTicket}
+              disabled={!selectedUserId || assigning}
+            >
+              {assigning ? "Assigning…" : "Assign"}
+            </button>
+          </footer>
         </div>
-        <div className="assign-select">
-          <input
-            type="text"
-            placeholder="Search user by name or email"
-            value={userSearch}
-            onChange={(e) => setUserSearch(e.target.value)}
-          />
-          <div className="user-list">
-            {filteredUsers.map((u) => (
-              <div
-                key={u.id}
-                className={`user-row ${selectedUserId === String(u.id) ? "selected" : ""}`}
-                onClick={() => setSelectedUserId(String(u.id))}
-              >
-                <div className="avatar">{(u.name || "U").charAt(0)}</div>
-                <div className="user-meta">
-                  <div className="user-name">{u.name}</div>
-                  <div className="user-email">{u.email}</div>
-                </div>
-                <div className="user-role">{u.role}</div>
-              </div>
-            ))}
-            {dataMembers.length === 0 && <p className="center-text">No eligible assignees</p>}
-          </div>
-        </div>
-        <div className="assign-actions">
-          <button className="btn-secondary" onClick={() => setShowAssignModal(false)}>Cancel</button>
-          <button
-            className="btn-primary"
-            onClick={assignTicket}
-            disabled={!selectedUserId || assigning}
-          >
-            {assigning ? "Assigning…" : "Confirm Assignment"}
-          </button>
-        </div>
-        {assignSuccess && <div className="success">{assignSuccess}</div>}
       </Modal>
     </DashboardLayout>
   );

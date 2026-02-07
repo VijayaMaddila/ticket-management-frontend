@@ -1,0 +1,229 @@
+/* Ticket card – borderless, chips, minimal padding */
+
+.ticket-card {
+  background: var(--surface, #fff);
+  border-radius: 10px;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  transition: background 0.15s ease;
+}
+
+.ticket-card:hover {
+  background: var(--muted-200, #f1f5f9);
+}
+
+.ticket-card__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 6px;
+}
+
+.ticket-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ticket-card__id {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+  letter-spacing: 0.02em;
+}
+
+/* Chips row: status, priority, type */
+.ticket-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.ticket-card .ui-badge,
+.ticket-card__chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+  border: none;
+}
+
+/* Softer chip colors (status) – match Badge class names ui-badge--open etc. */
+.ticket-card .ui-badge.ui-badge--status.ui-badge--open { background: #dbeafe; color: #1d4ed8; }
+.ticket-card .ui-badge.ui-badge--status.ui-badge--inprogress { background: #fef3c7; color: #b45309; }
+.ticket-card .ui-badge.ui-badge--status.ui-badge--onhold { background: #f1f5f9; color: #475569; }
+.ticket-card .ui-badge.ui-badge--status.ui-badge--completed,
+.ticket-card .ui-badge.ui-badge--status.ui-badge--closed { background: #d1fae5; color: #047857; }
+.ticket-card .ui-badge.ui-badge--status.ui-badge--rejected { background: #fee2e2; color: #b91c1c; }
+
+/* Softer chip colors (priority) */
+.ticket-card .ui-badge.ui-badge--priority.ui-badge--low { background: #d1fae5; color: #047857; }
+.ticket-card .ui-badge.ui-badge--priority.ui-badge--medium { background: #fef3c7; color: #b45309; }
+.ticket-card .ui-badge.ui-badge--priority.ui-badge--high { background: #fee2e2; color: #b91c1c; }
+.ticket-card .ui-badge.ui-badge--priority.ui-badge--urgent { background: #fecaca; color: #991b1b; }
+
+/* Type chip (neutral) */
+.ticket-card__chip {
+  background: var(--muted-200, #e2e8f0);
+  color: var(--text-primary, #0f172a);
+}
+
+.ticket-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text-primary, #0f172a);
+  margin: 0;
+}
+
+.ticket-card__title-label {
+  font-weight: 500;
+  color: var(--text-muted, #64748b);
+  margin-right: 4px;
+}
+
+.ticket-card__description {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-muted, #64748b);
+  margin: 0;
+}
+
+.ticket-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  font-size: 0.75rem;
+  color: var(--text-muted, #64748b);
+}
+
+.ticket-card__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ticket-card__meta-key {
+  font-weight: 500;
+  color: var(--text-muted, #64748b);
+}
+
+.ticket-card__meta-value {
+  color: var(--text-primary, #0f172a);
+}
+
+.ticket-card__dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 0.75rem;
+  color: var(--text-muted, #64748b);
+}
+
+.ticket-card__date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ticket-card__date-value {
+  color: var(--text-primary, #0f172a);
+  font-weight: 500;
+}
+
+.ticket-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: none;
+}
+
+.ticket-card__status-select {
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border, #e2e8f0);
+  background: var(--surface, #fff);
+  font-size: 0.75rem;
+  color: var(--text-primary, #0f172a);
+  cursor: pointer;
+  min-width: 110px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.ticket-card__status-select:hover,
+.ticket-card__status-select:focus {
+  outline: none;
+  border-color: var(--color-primary, #2563eb);
+  background: var(--muted-200, #f8fafc);
+}
+
+.ticket-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+/* Unified footer buttons – high specificity to override dashboard CSS */
+.ticket-card .ticket-card__footer .card-footer {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  margin-top: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+.ticket-card .ticket-card__footer .card-footer .view-comments-btn,
+.ticket-card .ticket-card__footer .card-footer .view-history-btn {
+  box-sizing: border-box !important;
+  height: 36px !important;
+  min-width: 100px !important;
+  padding: 0 14px !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  line-height: 36px !important;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ticket-card .ticket-card__footer .card-footer .view-comments-btn {
+  background: var(--color-primary, #2563eb);
+  color: #fff;
+}
+
+.ticket-card .ticket-card__footer .card-footer .view-comments-btn:hover {
+  background: var(--color-primary-dark, #1d4ed8);
+}
+
+.ticket-card .ticket-card__footer .card-footer .view-history-btn {
+  background: var(--muted-200, #e2e8f0);
+  color: var(--text-primary, #0f172a);
+}
+
+.ticket-card .ticket-card__footer .card-footer .view-history-btn:hover {
+  background: var(--muted-300, #cbd5e1);
+}
+
+@media (max-width: 480px) {
+  .ticket-card__chips {
+    width: 100%;
+  }
+}

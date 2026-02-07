@@ -202,7 +202,7 @@ const RequesterDashboard = () => {
               <p>No tickets found</p>
             ) : (
               filteredTickets.map((ticket) => (
-                <TicketCard key={ticket.id} ticket={ticket} titleLabel="Problem">
+                <TicketCard key={ticket.id} ticket={ticket}>
                   <div className="card-footer">
                     <button className="view-comments-btn" onClick={() => handleViewComments(ticket.id)}>
                       Comments

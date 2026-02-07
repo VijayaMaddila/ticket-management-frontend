@@ -124,7 +124,6 @@ const AssignedTickets = () => {
             <TicketCard
               key={t.id}
               ticket={t}
-              titleLabel="Problem"
               showDescription={true}
               descriptionMaxLength={120}
             >

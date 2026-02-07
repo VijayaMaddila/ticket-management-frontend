@@ -7,6 +7,12 @@ import {
   FiLogOut,
   FiMenu,
   FiX,
+  FiFileText,
+  FiCheckSquare,
+  FiClipboard,
+  FiInbox,
+  FiUserCheck,
+  FiDatabase,
   FiLogIn,
 } from "react-icons/fi";
 import ResolveIcon from "../../src/assets/resolve-icon.svg";
@@ -23,12 +29,12 @@ const Navbar = ({ role = "", setUser }) => {
   const userRole = role?.toLowerCase();
 
   const items = [
-    { path: "/dashboard", label: "Ticket List", icon: <FiFolder />, roles: ["admin"] },
-    { path: "/assigned-tickets", label: "Assigned Tickets", icon: <FiFolder />, roles: ["datamember"] },
-    { path: "/requesterDashboard", label: "My Tickets", icon: <FiFolder />, roles: ["requester"] },
-    { path: "/open-tickets", label: "Open Tickets", icon: <FiFolder />, roles: ["admin"] },
-    { path: "/requester", label: "Users", icon: <FiUsers />, roles: ["admin"] },
-    { path: "/manageDataMember", label: "Data Members", icon: <FiTag />, roles: ["admin"] },
+    { path: "/dashboard", label: "Ticket List", icon: <FiFileText />, roles: ["admin"] },
+    { path: "/assigned-tickets", label: "Assigned Tickets", icon: <FiCheckSquare />, roles: ["datamember"] },
+    { path: "/requesterDashboard", label: "My Tickets", icon: <FiClipboard />, roles: ["requester"] },
+    { path: "/open-tickets", label: "Open Tickets", icon: <FiInbox />, roles: ["admin"] },
+    { path: "/requester", label: "Users", icon: <FiUserCheck />, roles: ["admin"] },
+    { path: "/manageDataMember", label: "Data Members", icon: <FiDatabase />, roles: ["admin"] },
   ];
 
   const isActive = (path) => location.pathname === path;
