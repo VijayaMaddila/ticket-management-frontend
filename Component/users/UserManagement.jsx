@@ -26,7 +26,7 @@ const UserManagement = ({
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [editingId, setEditingId] = useState(null);
-  const [formData, setFormData] = useState({ name: "", email: "", role: roleFilter || "requester" });
+  const [formData, setFormData] = useState({ name: "", email: "", role: roleFilter || "requester",createdAt:""});
 
   useEffect(() => {
     if (!token) {
@@ -57,7 +57,7 @@ const UserManagement = ({
 
   const handleEditClick = (user) => {
     setEditingId(user.id);
-    setFormData({ name: user.name, email: user.email, role: user.role });
+    setFormData({ name: user.name, email: user.email, role: user.role,createdAt:user.createdAt });
   };
 
   const handleUpdate = async (id) => {
@@ -115,6 +115,13 @@ const UserManagement = ({
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="Email"
                   />
+                  <input
+                   type="date"
+                    value={formData.createdAt ? formData.createdAt.split("T")[0] : ""}
+                     onChange={(e) => setFormData({ ...formData, createdAt: e.target.value })}
+                     />
+                 
+                  
                   <select
                     value={formData.role}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
@@ -136,6 +143,7 @@ const UserManagement = ({
                 <div className="ticket-info">
                   <p><strong>Name:</strong> {u.name}</p>
                   <p><strong>Email:</strong> {u.email}</p>
+                  <p><strong>Account CreatedAt:</strong>{new Date(u.createdAt).toLocaleDateString()}</p>
                   <div className="edit-actions">
                     <button className="view-comments-btn" onClick={() => handleEditClick(u)}>
                       Edit

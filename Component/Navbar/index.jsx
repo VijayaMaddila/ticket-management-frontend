@@ -34,7 +34,7 @@ const Navbar = ({ role = "", setUser }) => {
     { path: "/requesterDashboard", label: "My Tickets", icon: <FiClipboard />, roles: ["requester"] },
     { path: "/open-tickets", label: "Open Tickets", icon: <FiInbox />, roles: ["admin"] },
     { path: "/requester", label: "Users", icon: <FiUserCheck />, roles: ["admin"] },
-    { path: "/manageDataMember", label: "Data Members", icon: <FiDatabase />, roles: ["admin"] },
+    { path: "/manageDataMember", label: "Data Team", icon: <FiDatabase />, roles: ["admin"] },
   ];
 
   const isActive = (path) => location.pathname === path;

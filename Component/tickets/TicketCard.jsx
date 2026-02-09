@@ -62,12 +62,12 @@ const TicketCard = ({
           <span className="ticket-card__id">#{id}</span>
           <div className="ticket-card__chips">
             <Badge variant="status" value={status}>
-              {status}
+              Status: {status}
             </Badge>
             <Badge variant="priority" value={priority}>
-              {priority}
+              Priority: {priority}
             </Badge>
-            <span className="ticket-card__chip">{requestType}</span>
+            <span className="ticket-card__chip">requestType: {requestType}</span>
           </div>
         </div>
 

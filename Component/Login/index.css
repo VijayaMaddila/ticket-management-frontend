@@ -5,6 +5,7 @@
   align-items: center;
   height: 100vh;
   font-family: 'Inter', sans-serif;
+  background: #f5f6fa;
   padding: 20px;
 }
 
@@ -36,25 +37,38 @@
   color: #555;
   margin-bottom: 25px;
 }
-
 .login-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.login-form input {
-  padding: 12px 14px;
+.login-form input,
+.login-form select {
+  padding: 12px 24px;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 16px;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
+  transition: border 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  background-color: #fff;
 }
 
-.login-form input:focus {
+.login-form input::placeholder,
+.login-form select {
+  color: #aaa;
+}
+
+.login-form input:focus,
+.login-form select:focus {
   outline: none;
   border-color: #1976d2;
   box-shadow: 0 0 5px rgba(25,118,210,0.4);
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 50px; 
+  box-sizing: border-box; 
 }
 .password-wrapper {
   position: relative;
@@ -69,15 +83,44 @@
   color: #1976d2;
   font-size: 14px;
   user-select: none;
+  transition: color 0.2s ease;
 }
 
+.password-wrapper span:hover {
+  color: #1565c0;
+}
 
+/* -------------------------------
+   Role Select Dropdown
+-------------------------------- */
+.role-select {
+  appearance: none;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 16px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.role-select:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 5px rgba(25,118,210,0.4);
+}
+
+/* -------------------------------
+   Error Message
+-------------------------------- */
 .error {
   color: #e74c3c;
   font-size: 0.85rem;
   text-align: center;
 }
 
+/* -------------------------------
+   Login Button
+-------------------------------- */
 .login-btn {
   padding: 12px;
   border-radius: 8px;
@@ -95,6 +138,9 @@
   transform: translateY(-1px);
 }
 
+/* -------------------------------
+   Register / Forgot Links
+-------------------------------- */
 .register-link {
   text-align: center;
   font-size: 0.85rem;
@@ -112,6 +158,9 @@
   text-decoration: underline;
 }
 
+/* -------------------------------
+   Responsive
+-------------------------------- */
 @media (max-width: 500px) {
   .login-card {
     padding: 30px 20px;
@@ -121,7 +170,8 @@
     font-size: 1.8rem;
   }
 
-  .login-form input {
+  .login-form input,
+  .login-form select {
     font-size: 15px;
   }
 
