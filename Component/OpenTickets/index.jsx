@@ -143,7 +143,8 @@ const OpenTickets = () => {
             <TicketCard
               key={ticket.id}
               ticket={ticket}
-              showDescription={false}
+              showDescription={true}
+              descriptionMaxLength={120}
             >
               {role !== "requester" && (
                 <button

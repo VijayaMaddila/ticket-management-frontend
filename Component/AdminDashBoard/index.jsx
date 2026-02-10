@@ -99,7 +99,7 @@ const Dashboard = () => {
           <EmptyState message="No tickets found" />
         ) : (
           filteredTickets.map((ticket) => (
-            <TicketCard key={ticket.id} ticket={ticket}>
+            <TicketCard key={ticket.id} ticket={ticket} showDescription={true}>
               {role === "admin" && (
                 <button
                   className="view-comments-btn"
