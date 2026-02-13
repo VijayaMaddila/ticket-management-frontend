@@ -1,10 +1,6 @@
 import React from "react";
 import { formatCommentDate } from "./formatDate";
 
-/**
- * Single comment: avatar, name (or "You" when own), role + time, message.
- * When isOutgoing, show "You" and align right.
- */
 const CommentItem = ({ comment, isOutgoing }) => {
   const displayName = isOutgoing ? "You" : (comment?.user?.name || "User");
   const rawName = comment?.user?.name || "User";
