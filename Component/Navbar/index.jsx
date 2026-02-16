@@ -29,6 +29,7 @@ const Navbar = ({ role = "", setUser }) => {
   const token = localStorage.getItem("token");
   const isLoggedIn = !!token;
   const userRole = role?.toLowerCase();
+  const hideLoginButton = ["/", "/login", "/register"].includes(location.pathname);
 
   const items = [
     { path: "/dashboard", label: "Ticket List", icon: <FiFileText />, roles: ["admin"] },
@@ -98,7 +99,7 @@ const Navbar = ({ role = "", setUser }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
-    navigate("/login");
+    navigate("/");
   };
 
   const login = () => navigate("/login");
@@ -136,18 +137,7 @@ const Navbar = ({ role = "", setUser }) => {
                   <span className="label">{item.label}</span>
                 </li>
               ))}
-
-          {isLoggedIn ? (
-            <li className="mobile-item logout" onClick={logout}>
-              <FiLogOut /> Logout
-            </li>
-          ) : (
-            <li className="mobile-item login" onClick={login}>
-              <FiLogIn /> Login
-            </li>
-          )}
-
-        {isLoggedIn && userData && (
+               {isLoggedIn && userData && (
           <div className="user-profile" onClick={() => setProfileOpen(!profileOpen)}>
             <div className="avatar">
               <img
@@ -162,6 +152,20 @@ const Navbar = ({ role = "", setUser }) => {
             </div>
           </div>
         )}
+
+          {isLoggedIn ? (
+            <li className="mobile-item logout" onClick={logout}>
+              <FiLogOut /> Logout
+            </li>
+          ) : (
+            !hideLoginButton && (
+              <li className="mobile-item login" onClick={login}>
+                <FiLogIn /> Login
+              </li>
+            )
+          )}
+
+       
         </ul>
         </nav>
 

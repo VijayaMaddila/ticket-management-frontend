@@ -14,6 +14,8 @@ const Dashboard = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const role = user?.role?.toLowerCase() || "";
   const [tickets, setTickets] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 10;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
@@ -61,10 +63,15 @@ const Dashboard = () => {
   const priorities = [...new Set(tickets.map((t) => t.priority).filter(Boolean))];
   const requestTypes = [...new Set(tickets.map((t) => t.requestType || t.request_type).filter(Boolean))];
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredTickets]);
+
   const handleViewComments = async (ticketId) => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/comments/ticket/${ticketId}`, {
-        headers: { ...getAuthHeaders(token), "user-id": user.id },
+        headers: { ...getAuthHeaders(token),
+           "user-id": user.id },
       });
       if (!res.ok) throw new Error("Failed to load comments");
       const data = await res.json();
@@ -98,18 +105,38 @@ const Dashboard = () => {
         {filteredTickets.length === 0 ? (
           <EmptyState message="No tickets found" />
         ) : (
-          filteredTickets.map((ticket) => (
-            <TicketCard key={ticket.id} ticket={ticket} showDescription={true}>
-              {role === "admin" && (
-                <button
-                  className="view-comments-btn"
-                  onClick={() => handleViewComments(ticket.id)}
-                >
-                  View Comments
-                </button>
-              )}
-            </TicketCard>
-          ))
+          (() => {
+            const totalPages = Math.ceil(filteredTickets.length / PAGE_SIZE) || 1;
+            const paginated = filteredTickets.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+            return (
+              <>
+                {paginated.map((ticket) => (
+                  <TicketCard key={ticket.id} ticket={ticket} showDescription={true}>
+                    {role === "admin" && (
+                      <button
+                        className="view-comments-btn"
+                        onClick={() => handleViewComments(ticket.id)}
+                      >
+                        View Comments
+                      </button>
+                    )}
+                  </TicketCard>
+                ))}
+
+                {filteredTickets.length > PAGE_SIZE && (
+                  <div className="pagination-controls" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginTop: 16 }}>
+                    <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage <= 1}>
+                      Previous
+                    </button>
+                    <span>Page {currentPage} of {totalPages}</span>
+                    <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage >= totalPages}>
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
+            );
+          })()
         )}
       </div>
       <CommentsModal

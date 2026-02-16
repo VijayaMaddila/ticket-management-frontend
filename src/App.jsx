@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "../Component/Login";
 import Register from "../Component/Register";
+import Landing from "../Component/Landing";
 import Dashboard from "../Component/AdminDashBoard";
 import AssignedTickets from "../Component/DataMemberDashboard";
 import OpenTickets from "../Component/OpenTickets";
@@ -24,7 +25,7 @@ function App() {
   }, []);
 
   const getHomeRoute = () => {
-    if (!user) return "/login";
+    if (!user) return "/";
 
     switch (user.role?.toLowerCase()) {
       case "admin":
@@ -47,6 +48,7 @@ function App() {
           <Routes>
           
           <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/register" element={<Register />} />
 
       

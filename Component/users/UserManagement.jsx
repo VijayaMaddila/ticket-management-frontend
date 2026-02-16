@@ -25,6 +25,8 @@ const UserManagement = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 10;
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({ name: "", email: "", role: roleFilter || "requester",createdAt:""});
 
@@ -76,6 +78,14 @@ const UserManagement = ({
       (u.email || "").toLowerCase().includes(search.toLowerCase())
   );
 
+  // reset to first page whenever filters/search change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredUsers]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
+  const paginatedUsers = filteredUsers.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
   if (loading) return <LoadingState message="Loading users…" />;
 
   return (
@@ -94,7 +104,7 @@ const UserManagement = ({
         {filteredUsers.length === 0 ? (
           <EmptyState message={emptyMessage} />
         ) : (
-          filteredUsers.map((u) => (
+          paginatedUsers.map((u) => (
             <div className="ticket-card" key={u.id}>
               <div className="ticket-header">
                 <span className="ticket-id">#{u.id}</span>
@@ -153,6 +163,18 @@ const UserManagement = ({
               )}
             </div>
           ))
+        )}
+
+        {filteredUsers.length > PAGE_SIZE && (
+          <div className="pagination-controls">
+            <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage <= 1}>
+              Previous
+            </button>
+            <span>Page {currentPage} of {totalPages}</span>
+            <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage >= totalPages}>
+              Next
+            </button>
+          </div>
         )}
       </div>
     </DashboardLayout>

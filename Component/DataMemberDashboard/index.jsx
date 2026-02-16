@@ -18,6 +18,8 @@ const AssignedTickets = () => {
   const userId = user?.id;
   const [tickets, setTickets] = useState([]);
   const [filteredTickets, setFilteredTickets] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 10;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [solveTicket, setSolveTicket] = useState(null);
@@ -62,6 +64,10 @@ const AssignedTickets = () => {
     if (priorityFilter !== "ALL") result = result.filter((t) => t.priority === priorityFilter);
     setFilteredTickets(result);
   }, [searchTerm, statusFilter, priorityFilter, tickets]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredTickets]);
 
   const handleStatusChange = async (newStatus) => {
     if (!solveTicket) return;
@@ -135,31 +141,51 @@ const AssignedTickets = () => {
         {filteredTickets.length === 0 ? (
           <EmptyState message="No assigned tickets" />
         ) : (
-          filteredTickets.map((t) => (
-            <TicketCard
-              key={t.id}
-              ticket={t}
-              showDescription={true}
-              descriptionMaxLength={120}
-            >
-              <div className="card-actions">
-                <button
-                  type="button"
-                  className="card-action-btn card-action-btn--solve"
-                  onClick={() => setSolveTicket(t)}
-                >
-                  Solve
-                </button>
-                <button
-                  type="button"
-                  className="card-action-btn card-action-btn--comments"
-                  onClick={() => fetchComments(t)}
-                >
-                  Comments
-                </button>
-              </div>
-            </TicketCard>
-          ))
+          (() => {
+            const totalPages = Math.ceil(filteredTickets.length / PAGE_SIZE) || 1;
+            const paginated = filteredTickets.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+            return (
+              <>
+                {paginated.map((t) => (
+                  <TicketCard
+                    key={t.id}
+                    ticket={t}
+                    showDescription={true}
+                    descriptionMaxLength={120}
+                  >
+                    <div className="card-actions">
+                      <button
+                        type="button"
+                        className="card-action-btn card-action-btn--solve"
+                        onClick={() => setSolveTicket(t)}
+                      >
+                        Solve
+                      </button>
+                      <button
+                        type="button"
+                        className="card-action-btn card-action-btn--comments"
+                        onClick={() => fetchComments(t)}
+                      >
+                        Comments
+                      </button>
+                    </div>
+                  </TicketCard>
+                ))}
+
+                {filteredTickets.length > PAGE_SIZE && (
+                  <div className="pagination-controls" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginTop: 16 }}>
+                    <button onClick={() => setCurrentPage((p) => Math.max(1, p - 1))} disabled={currentPage <= 1}>
+                      Previous
+                    </button>
+                    <span>Page {currentPage} of {totalPages}</span>
+                    <button onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))} disabled={currentPage >= totalPages}>
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
+            );
+          })()
         )}
       </div>
 

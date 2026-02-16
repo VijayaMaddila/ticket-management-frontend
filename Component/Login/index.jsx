@@ -101,6 +101,11 @@ const Login = ({ setUser }) => {
         <p className="register-link">
           Don't have an account? <Link to="/register">Create Account</Link>
         </p>
+      <div className="back-btn-container">
+      <button className="back-btn" onClick={() => navigate("/")}>
+          ← Back to main page
+        </button>
+      </div>
       </div>
     </div>
   );

@@ -27,6 +27,8 @@ const OpenTickets = () => {
   const [userSearch, setUserSearch] = useState("");
   const [assigning, setAssigning] = useState(false);
   const [assignSuccess, setAssignSuccess] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   useEffect(() => {
     if (!token) navigate("/login", { replace: true });
@@ -76,6 +78,11 @@ const OpenTickets = () => {
     setFilteredTickets(result);
   }, [tickets, searchTerm, priorityFilter, requestTypeFilter]);
 
+  // reset to first page whenever the filtered list changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredTickets]);
+
   useEffect(() => {
     if (showAssignModal) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
@@ -115,6 +122,9 @@ const OpenTickets = () => {
   if (loading) return <LoadingState message="Loading tickets..." />;
   if (error) return <ErrorState message={error} />;
 
+  const totalPages = Math.ceil(filteredTickets.length / PAGE_SIZE) || 1;
+  const paginatedTickets = filteredTickets.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
   return (
     <DashboardLayout title="Open Tickets">
       <span className="ticket-count">{filteredTickets.length} Tickets</span>
@@ -139,7 +149,7 @@ const OpenTickets = () => {
         {filteredTickets.length === 0 ? (
           <EmptyState message="No open tickets found" />
         ) : (
-          filteredTickets.map((ticket) => (
+          paginatedTickets.map((ticket) => (
             <TicketCard
               key={ticket.id}
               ticket={ticket}
@@ -163,6 +173,29 @@ const OpenTickets = () => {
           ))
         )}
       </div>
+
+      {/* Pagination controls - show 10 tickets per page */}
+      {filteredTickets.length > PAGE_SIZE && (
+        <div className="pagination-controls" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginTop: 16 }}>
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage <= 1}
+            aria-label="Previous page"
+          >
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage >= totalPages}
+            aria-label="Next page"
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       <Modal
         isOpen={!!showAssignModal && !!selectedTicket}
