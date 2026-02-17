@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FiShield, FiClock, FiZap, FiUsers, FiBarChart2 } from "react-icons/fi";
 import "./index.css";
