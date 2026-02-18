@@ -13,6 +13,7 @@ import {
   FiX,
 } from "react-icons/fi";
 import ResolveIcon from "../../src/assets/resolve-icon.svg";
+import { API_BASE_URL } from "../../src/config/api";
 import "./index.css";
 
 const Navbar = ({ role = "", setUser }) => {
@@ -44,7 +45,7 @@ const Navbar = ({ role = "", setUser }) => {
 
   const fetchProfile = () => {
     if (!isLoggedIn) return;
-    fetch("http://localhost:8080/api/users/profile", {
+    fetch(`${API_BASE_URL}/api/users/profile`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -52,7 +53,7 @@ const Navbar = ({ role = "", setUser }) => {
         setUserData(data);
         setNameEdit(data.name);
         // fetch profile photo
-        fetch("http://localhost:8080/api/users/profile/photo", {
+        fetch(`${API_BASE_URL}/api/users/profile/photo`, {
           headers: { Authorization: `Bearer ${token}` },
         })
           .then((res) => res.blob())
@@ -78,7 +79,7 @@ const Navbar = ({ role = "", setUser }) => {
     if (file) formData.append("file", file);
     formData.append("name", nameEdit);
 
-    fetch("http://localhost:8080/api/users/profile/photo", {
+    fetch(`${API_BASE_URL}/api/users/profile/photo`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,
