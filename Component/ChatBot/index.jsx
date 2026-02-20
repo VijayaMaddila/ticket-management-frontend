@@ -127,7 +127,7 @@ const ChatBot = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${BASE_URL}/api/chat?userId=${currentUserId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/chat?userId=${currentUserId}`, {
   method: "POST",
   headers: { "Content-Type": "text/plain" },
   body: payload,
