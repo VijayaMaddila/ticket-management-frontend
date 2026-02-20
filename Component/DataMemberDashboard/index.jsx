@@ -38,7 +38,9 @@ const AssignedTickets = () => {
     const fetchTickets = async () => {
       try {
         const data = await apiGet(`/api/tickets/assigned-to/${userId}`, { token });
-        const list = Array.isArray(data) ? data : [];
+        let list = Array.isArray(data) ? data : [];
+        // dedupe by id
+        list = Array.from(new Map(list.map((t) => [t.id, t])).values());
         setTickets(list);
         setFilteredTickets(list);
       } catch (err) {

@@ -41,6 +41,12 @@ const OpenTickets = () => {
       if (role === "requester") {
         openTickets = openTickets.filter((t) => t.requester?.id === user.id);
       }
+      // remove duplicates by id
+      if (Array.isArray(openTickets)) {
+        openTickets = Array.from(new Map(openTickets.map((t) => [t.id, t])).values());
+      } else {
+        openTickets = [];
+      }
       setTickets(openTickets);
       setFilteredTickets(openTickets);
     } catch (err) {

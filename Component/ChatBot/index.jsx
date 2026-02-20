@@ -202,7 +202,17 @@ const ChatBot = () => {
   };
 
   const latestBot = [...messages].reverse().find((m) => m.from === "bot");
-  const quickReplies = extractQuickReplies(latestBot ? latestBot.text : "");
+  let quickReplies = extractQuickReplies(latestBot ? latestBot.text : "");
+  // If the bot provided structured ticket details, avoid turning them into quick-reply buttons
+  const structuredDetailsRegex = /(ticket\s*details|title:|status:|priority:|due\s*date:)/i;
+  if (latestBot && structuredDetailsRegex.test(latestBot.text)) {
+    quickReplies = [];
+  } else {
+    // keep only concise single-line quick replies to avoid large duplicate blocks
+    quickReplies = quickReplies.filter(
+      (q) => typeof q.label === "string" && q.label.length <= 60 && !q.label.includes("\n")
+    );
+  }
 
   return (
     <>

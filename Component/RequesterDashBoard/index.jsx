@@ -44,8 +44,14 @@ const RequesterDashboard = () => {
     const fetchTickets = async () => {
       try {
         const data = await apiGet("/api/tickets", { token });
-        const visibleTickets =
+        let visibleTickets =
           role === "requester" ? data.filter((t) => t.requester?.id === user.id) : data;
+        // deduplicate by id in case API returns duplicates
+        if (Array.isArray(visibleTickets)) {
+          visibleTickets = Array.from(new Map(visibleTickets.map((t) => [t.id, t])).values());
+        } else {
+          visibleTickets = [];
+        }
         setTickets(visibleTickets);
       } catch (err) {
         setError(err.message);
