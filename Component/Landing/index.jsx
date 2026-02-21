@@ -49,7 +49,7 @@ export default function Landing() {
                 <span>Active tickets</span>
               </div>
               <div className="stat">
-                <strong>99.9%</strong>
+                <strong>100%</strong>
                 <span>Uptime</span>
               </div>
             </div>
