@@ -111,30 +111,35 @@ export default function Landing() {
         </div>
        <div className="features-grid">
   <Feature
-    icon={<FiZap />}
-    title="Centralized Request Intake"
-    desc="Capture all data requests, issues, and tasks in one unified system with structured forms."
-  />
-  <Feature
-    icon={<FiUsers />}
-    title="Intelligent Routing"
-    desc="Automatically route requests to the right teams based on rules, categories, or workload."
-  />
-  <Feature
-    icon={<FiClock />}
-    title="Workflow & SLA Automation"
-    desc="Define workflows, set SLAs, trigger reminders, and prevent delays with smart automation."
-  />
-  <Feature
-    icon={<FiBarChart2 />}
-    title="Operational Visibility"
-    desc="Real-time dashboards provide insights into request volume, turnaround time, and team performance."
-  />
-  <Feature
-    icon={<FiShield />}
-    title="Compliance & Audit Trails"
-    desc="Maintain complete request history with secure access controls and audit logs."
-  />
+  icon={<FiZap />}
+  title="Centralized Request Intake"
+  desc="Capture all data requests, issues, and tasks in one unified system with structured forms."
+/>
+<Feature
+  icon={<FiUsers />}
+  title="Intelligent Routing"
+  desc="Automatically route requests to the right teams based on rules, categories, or workload."
+/>
+<Feature
+  icon={<FiClock />}
+  title="Workflow & SLA Automation"
+  desc="Define workflows, set SLAs, trigger reminders, and prevent delays with smart automation."
+/>
+<Feature
+  icon={<FiBarChart2 />}
+  title="Operational Visibility"
+  desc="Real-time dashboards provide insights into request volume, turnaround time, and team performance."
+/>
+<Feature
+  icon={<FiShield />}
+  title="Compliance & Audit Trails"
+  desc="Maintain complete request history with secure access controls and audit logs."
+/>
+<Feature
+  icon={<FiMail />}
+  title="Email & Slack Notifications"
+  desc="Automatically create tickets from emails, and get notifications on ticket creation and status updates via email and Slack for real-time tracking."
+/>
 </div>
 
       </section>
