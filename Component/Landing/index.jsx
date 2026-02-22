@@ -112,8 +112,52 @@ const DemoPlayer = () => {
   );
 };
 
+const GettingStartedModal = ({ type, onClose, onConnect }) => {
+  const title = type === "slack" ? "Get started with Slack" : "Get started with Email";
+  const desc =
+    type === "slack"
+      ? "Quick start: install the Slack app, grant workspace permissions, and choose a channel to post notifications."
+      : "Quick start: connect a mailbox (Gmail/Outlook or IMAP) so incoming emails create tickets automatically.";
+
+  const steps =
+    type === "slack"
+      ? [
+          "Create a Slack app and configure OAuth scopes (chat:write, channels:read, users:read).",
+          "Add Redirect URL: /auth/slack/callback on your backend.",
+          "Click Connect to start the OAuth flow."
+        ]
+      : [
+          "Decide provider (Gmail/Outlook) or IMAP mailbox.",
+          "Provide mailbox credentials securely to the backend.",
+          "Map email fields (subject/sender) to ticket fields."
+        ];
+
+  return (
+    <div className="gs-modal" role="dialog" aria-modal="true" aria-labelledby="gs-title">
+      <div className="gs-panel">
+        <button className="gs-close" onClick={onClose} aria-label="Close">×</button>
+        <div className="gs-body">
+          <h2 id="gs-title">{title}</h2>
+          <p className="lead">{desc}</p>
+          <ol>
+            {steps.map((s, i) => (
+              <li key={i}>{s}</li>
+            ))}
+          </ol>
+          <div style={{ marginTop: 16 }}>
+            <button className="btn primary" onClick={onConnect}>Connect</button>
+            <button className="btn ghost" style={{ marginLeft: 8 }} onClick={onClose}>Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function Landing() {
   const navigate = useNavigate();
+  const [gsOpen, setGsOpen] = useState(false);
+  const [gsType, setGsType] = useState(null);
 
   return (
     <div className="landing-page fresh">
@@ -232,6 +276,79 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+    {/* Integration section */}
+    <section className="integrations container">
+      <div className="integrations-header">
+        <h2 className="section-title">Integration</h2>
+        <p className="section-desc">Connect with the tools your team already uses — notifications, ticket creation, and more.</p>
+      </div>
+
+      <div className="integrations-grid">
+        <div className="integration-card">
+          <div className="integration-top">
+            <div className="integration-logo" aria-hidden>
+              <img src="https://easyretro.io/_nuxt/img/slack.d3d87b8.svg" alt="Slack" />
+            </div>
+            <div className="integration-info">
+              <h3>Slack</h3>
+              <div className="integration-badge">Slack integration for ticketing</div>
+            </div>
+          </div>
+          <p className="integration-desc">Create tickets from Slack and send notifications to channels or users when tickets are created or updated.</p>
+          <div className="integration-actions">
+            <button
+              className="btn ghost"
+              onClick={() => {
+                setGsType("slack");
+                setGsOpen(true);
+              }}
+            >
+              Learn more
+            </button>
+          </div>
+        </div>
+
+        <div className="integration-card">
+          <div className="integration-top">
+            <div className="integration-logo" aria-hidden>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Email">
+                <path d="M3 6.5A2.5 2.5 0 015.5 4h13A2.5 2.5 0 0121 6.5v11a2.5 2.5 0 01-2.5 2.5h-13A2.5 2.5 0 013 17.5v-11z" stroke="#0b74ff" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M21 6.5l-9 7.25L3 6.5" stroke="#0b74ff" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div className="integration-info">
+              <h3>Email</h3>
+            </div>
+          </div>
+          <p className="integration-desc">Create tickets from incoming email and send email notifications for ticket updates and assignments.</p>
+          <div className="integration-actions">
+            <button
+              className="btn ghost"
+              onClick={() => {
+                setGsType("email");
+                setGsOpen(true);
+              }}
+            >
+              Learn more
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    {gsOpen && (
+      <GettingStartedModal
+        type={gsType}
+        onClose={() => setGsOpen(false)}
+        onConnect={() => {
+          setGsOpen(false);
+          if (gsType === "slack") navigate("/integrations/slack");
+          if (gsType === "email") navigate("/integrations/email");
+        }}
+      />
+    )}
 
       <footer className="footer">
         <div className="container footer-inner">
