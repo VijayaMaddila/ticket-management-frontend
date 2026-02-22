@@ -355,6 +355,59 @@
 }
 .features-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; align-items:stretch; }
 
+/* Create tickets section */
+.create-tickets {
+  padding: 36px 0;
+  background: #fff;
+  border-top: 1px solid #eef2f7;
+}
+.create-tickets h2 {
+  font-size: 20px;
+  margin: 0 0 16px;
+  text-align: center;
+  color: #071132;
+  font-weight: 700;
+}
+.ticket-methods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 18px;
+}
+.create-tickets .method {
+  background: #fbfdff;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(2,6,23,0.04);
+}
+.create-tickets .method h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #071132;
+}
+.create-tickets .method ol {
+  margin: 0 0 12px 18px;
+  color: #475569;
+  font-size: 14px;
+}
+.create-tickets pre {
+  background: #0b74ff0f;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 13px;
+  color: #071132;
+  margin: 8px 0 0;
+}
+.create-tickets code {
+  background: #f1f8ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
 .how { padding:40px 0; background:#fbfcff; border-top:1px solid #eef2f7; }
 .how h2 {
   margin: 0;
@@ -444,6 +497,9 @@
     grid-template-columns: repeat(2, 1fr);
   }
   .step { min-height: 120px; }
+  .ticket-methods {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 520px) {
@@ -477,6 +533,18 @@
   }
   .step .num { margin: 0 auto 10px; }
   .step p { text-align: center; }
+  .ticket-methods {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .create-tickets pre {
+    font-size: 13px;
+    padding: 10px;
+  }
+  .create-tickets .method ol {
+    font-size: 14px;
+    margin-left: 14px;
+  }
 }
 
 @media (max-width: 380px) {
