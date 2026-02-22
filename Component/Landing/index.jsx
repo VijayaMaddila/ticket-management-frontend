@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiShield, FiClock, FiZap, FiUsers, FiBarChart2, FiMail } from "react-icons/fi";
+import { FiShield, FiClock, FiZap, FiUsers, FiBarChart2, FiMail, FiMessageCircle } from "react-icons/fi";
 import "./index.css";
 
 
@@ -15,7 +14,7 @@ const Feature = ({ icon, title, desc }) => (
 
 const DemoVideo = () => {
   const [open, setOpen] = useState(false);
-  const poster = "/assets/demo-poster.png"; // poster image added to /assets/demo-poster.png
+  const poster = "/assets/demo-poster.png"; 
 
   return (
     <div className="demo-container">
@@ -118,7 +117,7 @@ export default function Landing() {
 
   return (
     <div className="landing-page fresh">
-      {/* Hero Section */}
+
       <header className="fresh-hero">
         <div className="container hero-grid">
           <div className="hero-copy">
@@ -161,61 +160,60 @@ export default function Landing() {
 
           <div className="hero-media">
             <div className="card">
-              {/* Demo poster with play button; click to open modal with demo video */}
               <DemoVideo />
             </div>
           </div>
         </div>
       </header>
 
-      {/* Features Section */}
       <section className="features container">
         <div className="features-header">
           <h2 className="section-title">Features</h2>
-          <p className="section-desc">Key capabilities to automate requests, manage workflows and deliver results faster.</p>
+          <p className="section-desc">
+            Key capabilities to automate requests, manage workflows and deliver results faster.
+          </p>
         </div>
+
         <div className="features-grid">
-          <Feature
-            icon={<FiZap />}
-            title="Centralized Request Intake"
+          <Feature icon={<FiZap />} title="Centralized Request Intake"
             desc="Capture all data requests, issues, and tasks in one unified system with structured forms."
           />
-          <Feature
-            icon={<FiUsers />}
-            title="Intelligent Routing"
+
+          <Feature icon={<FiUsers />} title="Intelligent Routing"
             desc="Automatically route requests to the right teams based on rules, categories, or workload."
           />
-          <Feature
-            icon={<FiClock />}
-            title="Workflow & SLA Automation"
+
+          <Feature icon={<FiClock />} title="Workflow & SLA Automation"
             desc="Define workflows, set SLAs, trigger reminders, and prevent delays with smart automation."
           />
-          <Feature
-            icon={<FiBarChart2 />}
-            title="Operational Visibility"
+
+          <Feature icon={<FiBarChart2 />} title="Operational Visibility"
             desc="Real-time dashboards provide insights into request volume, turnaround time, and team performance."
           />
-          <Feature
-            icon={<FiShield />}
-            title="Compliance & Audit Trails"
+
+          <Feature icon={<FiShield />} title="Compliance & Audit Trails"
             desc="Maintain complete request history with secure access controls and audit logs."
           />
-          <Feature
-            icon={<FiMail />}
-            title="Email & Slack Notifications"
+
+          <Feature icon={<FiMail />} title="Email & Slack Notifications"
             desc="Automatically create tickets from emails, and get notifications on ticket creation and status updates via email and Slack for real-time tracking."
           />
+
+         <Feature
+  icon={<FiMessageCircle />}
+  title="Chatbot & Slack Ticket Creation"
+  desc="Create tickets instantly through a chatbot or directly from Slack channels using simple commands without leaving the conversation."
+/>
         </div>
       </section>
 
-      {/* How It Works Section */}
       <section className="how container">
         <h2>How It Works</h2>
         <div className="steps">
           <div className="step">
             <div className="num">1</div>
             <h4>Submit a Request</h4>
-            <p>Users submit data requests, issues, or tasks through structured forms, email, or API.</p>
+            <p>Users submit data requests, issues, or tasks through structured forms, email, Slack, chatbot, or API.</p>
           </div>
           <div className="step">
             <div className="num">2</div>
@@ -235,7 +233,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="footer">
         <div className="container footer-inner">
           <div>© 2025 Segmento</div>
