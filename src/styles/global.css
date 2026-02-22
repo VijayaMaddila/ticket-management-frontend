@@ -1,0 +1,167 @@
+/* Global responsive utilities and design tokens (ticketing-style) */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg, #f4f6f8);
+  color: var(--text, #172b4d);
+  line-height: 1.45;
+  font-size: 16px;
+}
+
+/* Design tokens / CSS variables (ticketing app palette + spacing) */
+:root {
+  /* spacing scale */
+  --space-xxs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 2.5rem;
+
+  /* sizing */
+  --card-padding: 2rem;
+  --card-padding-sm: 1.125rem;
+  --card-radius: 8px;
+  --container-max-width: 1200px;
+
+  /* ticketing palette (inspired by common tools) */
+  --color-primary: #0b66c3; /* stronger blue */
+  --color-primary-700: #084ea0;
+  --color-accent: #00a991; /* subtle teal for statuses */
+  --color-muted: #6b778c;
+  --color-bg-soft: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-border: #e3e6ea;
+  --color-error: #de350b;
+
+  /* typography */
+  --font-size-base: 1rem;
+  --font-size-input: 1rem;
+  --h1-size: clamp(1.6rem, 2.2vw, 2rem);
+
+  /* input */
+  --input-padding-vertical: 0.75rem;
+  --input-padding-horizontal: 1rem;
+
+  /* breakpoints */
+  --bp-sm: 520px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+}
+
+/* Layout utilities */
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.center-xy {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-responsive {
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  background: var(--color-surface);
+  border-radius: var(--card-radius);
+  box-shadow: 0 6px 18px rgba(15,23,42,0.06);
+}
+
+.text-center { text-align: center; }
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: calc(var(--space-sm)) calc(var(--space-md));
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Header & sidebar (basic tokens for ticketing layout) */
+.app-header {
+  background: #fff;
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-sidebar {
+  width: 260px;
+  background: #fff;
+  border-right: 1px solid var(--color-border);
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Small form controls consistency */
+input, select, textarea {
+  font-family: inherit;
+  font-size: var(--font-size-input);
+  color: inherit;
+}
+
+input[type="text"], input[type="password"], select, textarea {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: var(--input-padding-vertical) var(--input-padding-horizontal);
+  border-radius: 6px;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(11,102,195,0.08);
+}
+
+/* Card accent used in ticketing UIs */
+.card-accent {
+  position: relative;
+  overflow: visible;
+}
+.card-accent::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--color-primary);
+  border-radius: 6px 0 0 6px;
+}
+
+/* Small helpers */
+.muted { color: var(--color-muted); }
+.status-open { color: var(--color-accent); font-weight:600; }
+
+/* Responsive tweaks for narrow screens */
+@media (max-width: 520px) {
+  .app-sidebar { display: none; }
+  .card-responsive { padding: 0.75rem; }
+}
+
+/* End of global styles */

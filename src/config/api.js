@@ -1,19 +1,13 @@
-// src/api.js
-
 // Base URL for backend
-export const API_BASE_URL = "https://tickett-management-backend.onrender.com";
+export const API_BASE_URL = "http://localhost:8080";
 
   
-
-// Get headers for requests, including Authorization if token exists
 export function getAuthHeaders(token) {
   const t = token ?? localStorage.getItem("token");
   const headers = { "Content-Type": "application/json" };
   if (t) headers.Authorization = `Bearer ${t}`;
   return headers;
 }
-
-// Core fetch request function
 export async function apiRequest(path, options = {}) {
   const { token, ...fetchOptions } = options;
   const url = path.startsWith("http") ? path : `${API_BASE_URL}${path}`;

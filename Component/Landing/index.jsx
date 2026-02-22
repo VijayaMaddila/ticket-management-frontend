@@ -1,4 +1,5 @@
 
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiShield, FiClock, FiZap, FiUsers, FiBarChart2, FiMail } from "react-icons/fi";
 import "./index.css";
@@ -11,6 +12,106 @@ const Feature = ({ icon, title, desc }) => (
     <p>{desc}</p>
   </div>
 );
+
+const DemoVideo = () => {
+  const [open, setOpen] = useState(false);
+  const poster = "/assets/demo-poster.png"; // poster image added to /assets/demo-poster.png
+
+  return (
+    <div className="demo-container">
+      {!open ? (
+        <div
+          className="video-poster"
+          role="button"
+          tabIndex={0}
+          onClick={() => setOpen(true)}
+          onKeyDown={(e) => e.key === "Enter" && setOpen(true)}
+          aria-label="Open demo"
+        >
+          <img src={poster} alt="Demo of creating a ticket" />
+          <div className="play-btn" aria-hidden>
+            <svg viewBox="0 0 100 100" width="40" height="40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="40" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.22)" strokeWidth="1.5"/>
+              <polygon points="44,36 66,50 44,64" fill="#fff" />
+            </svg>
+          </div>
+        </div>
+      ) : (
+        <div className="demo-inline" role="region" aria-label="Demo player">
+          <button className="demo-close" onClick={() => setOpen(false)} aria-label="Close demo">×</button>
+          <DemoPlayer />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const DemoPlayer = () => {
+  const steps = [
+    { who: "user", text: "Hi — I need to create a ticket for a bug in the login page." },
+    { who: "bot", text: "Got it. What's the priority and a short description?" },
+    { who: "user", text: "High. Users receive an 'invalid credentials' error even with correct password." },
+    { who: "bot", text: "Creating ticket... ✅ Ticket #4231 created and assigned to Engineering." },
+    { who: "bot", text: "Would you like to notify the requester by email?" },
+  ];
+
+  const [visible, setVisible] = useState(0);
+  const [typing, setTyping] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    if (visible < steps.length) {
+      const step = steps[visible];
+      if (step.who === "bot") {
+        setTyping(true);
+        const t1 = setTimeout(() => {
+          if (!mounted) return;
+          setTyping(false);
+          setVisible((v) => v + 1);
+        }, 1200 + Math.min(visible * 400, 1000));
+        return () => {
+          mounted = false;
+          clearTimeout(t1);
+        };
+      } else {
+        const t2 = setTimeout(() => {
+          if (!mounted) return;
+          setVisible((v) => v + 1);
+        }, 800);
+        return () => {
+          mounted = false;
+          clearTimeout(t2);
+        };
+      }
+    }
+  }, [visible]);
+
+  return (
+    <div className="demo-player" aria-live="polite">
+      <div className="demo-chat">
+        {steps.slice(0, visible).map((s, i) => (
+          <div key={i} className={`msg ${s.who}`}>
+            <div className="bubble">{s.text}</div>
+          </div>
+        ))}
+
+        {typing && (
+          <div className="msg bot">
+            <div className="bubble typing">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="demo-controls">
+        <button className="btn ghost" onClick={() => { setTimeout(() => window.location.reload(), 50); }}>Replay</button>
+      </div>
+    </div>
+  );
+};
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -60,44 +161,8 @@ export default function Landing() {
 
           <div className="hero-media">
             <div className="card">
-              <svg viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Data network illustration">
-                <defs>
-                  <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
-                    <stop offset="0%" stopColor="#eef6ff" />
-                    <stop offset="100%" stopColor="#f8fbff" />
-                  </linearGradient>
-                  <linearGradient id="g2" x1="0" x2="1">
-                    <stop offset="0%" stopColor="#0b74ff" />
-                    <stop offset="100%" stopColor="#6dd3ff" />
-                  </linearGradient>
-                </defs>
-                <rect width="100%" height="100%" rx="12" fill="url(#g1)" />
-                <g stroke="rgba(11,116,255,0.12)" strokeWidth="2" fill="none">
-                  <line x1="80" y1="120" x2="240" y2="60" />
-                  <line x1="240" y1="60" x2="400" y2="120" />
-                  <line x1="400" y1="120" x2="560" y2="80" />
-                  <line x1="120" y1="220" x2="300" y2="260" />
-                  <line x1="300" y1="260" x2="520" y2="220" />
-                  <line x1="520" y1="220" x2="680" y2="280" />
-                </g>
-                <g>
-                  <circle cx="80" cy="120" r="8" fill="url(#g2)" />
-                  <circle cx="240" cy="60" r="10" fill="#0b74ff" opacity="0.95" />
-                  <circle cx="400" cy="120" r="6" fill="#6dd3ff" />
-                  <circle cx="560" cy="80" r="9" fill="#0b74ff" />
-                  <circle cx="120" cy="220" r="7" fill="#0b74ff" />
-                  <circle cx="300" cy="260" r="12" fill="#0b74ff" />
-                  <circle cx="520" cy="220" r="8" fill="#6dd3ff" />
-                  <circle cx="680" cy="280" r="6" fill="#0b74ff" />
-                </g>
-                <g>
-                  <rect x="460" y="30" width="200" height="56" rx="8" fill="#071132" opacity="0.9" />
-                  <text x="480" y="66" fill="#fff" fontSize="12" fontFamily="sans-serif">Requests • 1,248</text>
-                  <rect x="60" y="330" width="220" height="88" rx="10" fill="#ffffff" stroke="#e6eefb" />
-                  <text x="80" y="360" fill="#071132" fontSize="14" fontFamily="sans-serif">Open tickets</text>
-                  <text x="80" y="382" fill="#64748b" fontSize="12" fontFamily="sans-serif">Active: 72 • SLA breaches: 2</text>
-                </g>
-              </svg>
+              {/* Demo poster with play button; click to open modal with demo video */}
+              <DemoVideo />
             </div>
           </div>
         </div>
